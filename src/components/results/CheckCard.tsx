@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 const HELP: Record<string, string> = {
   'safe-browsing':  'Googles Safe Browsing API sjekker alle URLer i meldingen mot en database over kjente phishing-sider, skadevare og andre nettrusler. En treff betyr at lenken aktivt brukes i angrep.',
   'domain-age':     'Nye domener (under 6 måneder) brukes ofte til svindel fordi de er billige å registrere og lett å bytte. Scammere forlater domenet etter kort tid. Et etablert domene er et godt tegn.',
-  'emailrep':       'EmailRep.io sjekker avsenderens e-postadresse mot svindeldatabaser og vurderer omdømmet basert på aktivitetshistorikk, rapporteringer og om adressen er knyttet til kjente tjenester.',
+  'mx-record':      'Sjekker om avsenderdomenet har gyldige e-postservere (MX-records) og om det er et kjent engangsdomene. Domener uten MX-oppsett er et rødt flagg — de kan ikke motta svar, noe ekte avsendere alltid kan.',
   'lookalike':      'Phishing-avsendere registrerer domener som ligner kjente merkevarer — f.eks. paypa1.com eller micros0ft.com. Denne sjekken oppdager slike typosquatting-domener i meldingen.',
   'crypto-flag':    'Legitime avsendere ber aldri om betaling via kryptovaluta eller gavekort. Forespørsler om dette er blant de sterkeste enkeltindikatorene for svindel — umulig å reversere og vanskelig å spore.',
   'phone-numbers':  'Telefonnumre i meldingen kan brukes til vishing (telefon-phishing). Scammere ber deg ringe dem for å flytte kommunikasjonen vekk fra sporbare kanaler.',

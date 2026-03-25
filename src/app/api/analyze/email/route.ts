@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkSafeBrowsing } from '@/lib/checks/safe-browsing'
 import { checkDomainAge } from '@/lib/checks/whois'
-import { checkEmailRep } from '@/lib/checks/emailrep'
+import { checkMxRecord } from '@/lib/checks/mx'
 import { parseEmailHeaders } from '@/lib/checks/headers'
 import { detectLookalikeDomains, extractDomains } from '@/lib/checks/lookalike'
 import { extractUrls, extractPhoneNumbers, containsCryptoMention } from '@/lib/extractors'
@@ -23,13 +23,13 @@ export async function POST(req: NextRequest) {
   const [safeBrowsing, domainAge, emailRep] = await Promise.allSettled([
     checkSafeBrowsing(urls, process.env.GOOGLE_SAFE_BROWSING_KEY ?? ''),
     checkDomainAge(senderDomain),
-    checkEmailRep(sender, process.env.EMAILREP_KEY ?? ''),
+    checkMxRecord(sender),
   ])
 
   const checks: CheckResult[] = [
     safeBrowsing.status === 'fulfilled' ? safeBrowsing.value : { id:'safe-browsing', label:'Safe Browsing', status:'error', weight:25, detail:'Check failed' },
     domainAge.status === 'fulfilled' ? domainAge.value : { id:'domain-age', label:'Domain Age', status:'error', weight:15, detail:'Check failed' },
-    emailRep.status === 'fulfilled' ? emailRep.value : { id:'emailrep', label:'Email Reputation', status:'error', weight:20, detail:'Check failed' },
+    emailRep.status === 'fulfilled' ? emailRep.value : { id:'mx-record', label:'E-postdomene', status:'error', weight:20, detail:'Sjekk feilet' },
   ]
 
   const lookalikes = detectLookalikeDomains(extractDomains(fullText))
