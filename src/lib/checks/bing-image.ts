@@ -1,11 +1,13 @@
 import type { CheckResult } from '@/lib/types'
 
 export async function checkReverseImage(imageUrl: string, apiKey: string): Promise<CheckResult> {
+  if (!imageUrl) return { id:'reverse-image', label:'Reverse Image Search', status:'error', weight:20, detail:'No image URL provided' }
   try {
+    const knowledgeRequest = JSON.stringify({ imageInfo: { url: imageUrl } })
     const res = await fetch('https://api.bing.microsoft.com/v7.0/images/visualsearch?mkt=en-US', {
       method: 'POST',
       headers: { 'Ocp-Apim-Subscription-Key': apiKey, 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `knowledgeRequest={"imageInfo":{"url":"${imageUrl}"}}`,
+      body: `knowledgeRequest=${encodeURIComponent(knowledgeRequest)}`,
     })
     const data = await res.json()
     const pages = (data.tags ?? [])
