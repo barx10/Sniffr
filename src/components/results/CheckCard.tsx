@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import type { CheckResult } from '@/lib/types'
-import { CheckCircle2, AlertTriangle, XCircle, MinusCircle, ChevronDown, HelpCircle } from 'lucide-react'
+import { CheckCircle2, AlertTriangle, XCircle, MinusCircle, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const HELP: Record<string, string> = {
@@ -32,8 +32,8 @@ export function CheckCard({ check, index }: { check: CheckResult; index: number 
   return (
     <div
       className={cn(
-        'rounded-lg bg-white/[0.025] border border-white/[0.06] animate-fade-in-up overflow-hidden',
-        helpText && 'cursor-pointer select-none'
+        'rounded-lg bg-white/[0.025] border border-white/[0.06] animate-fade-in-up overflow-hidden transition-colors',
+        helpText && 'cursor-pointer hover:bg-white/[0.04]'
       )}
       style={{ animationDelay: `${index * 45}ms` }}
       onClick={() => helpText && setOpen(v => !v)}
@@ -43,23 +43,15 @@ export function CheckCard({ check, index }: { check: CheckResult; index: number 
         <Icon className={cn('w-4 h-4 flex-shrink-0 mt-0.5', iconCls)} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-0.5">
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm font-semibold">{check.label}</span>
-              {helpText && (
-                <HelpCircle className={cn(
-                  'w-3 h-3 text-muted-foreground/50 transition-colors',
-                  open && 'text-amber-500/70'
-                )} />
-              )}
-            </div>
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            <span className="text-sm font-semibold">{check.label}</span>
+            <div className="flex items-center gap-2 flex-shrink-0">
               <span className={cn('text-xs font-bold tracking-[0.08em] uppercase', labelCls)}>
                 {label}
               </span>
               {helpText && (
                 <ChevronDown className={cn(
-                  'w-3.5 h-3.5 text-muted-foreground/40 transition-transform duration-200',
-                  open && 'rotate-180'
+                  'w-4 h-4 text-foreground/50 transition-transform duration-200 flex-shrink-0',
+                  open && 'rotate-180 text-amber-400'
                 )} />
               )}
             </div>
@@ -69,8 +61,8 @@ export function CheckCard({ check, index }: { check: CheckResult; index: number 
       </div>
 
       {helpText && open && (
-        <div className="px-3 pb-3 pl-[calc(0.75rem+0.125rem+1rem+0.75rem)]">
-          <div className="text-xs text-muted-foreground leading-relaxed bg-white/[0.04] border border-white/[0.07] rounded-md px-3 py-2.5">
+        <div className="px-3 pb-3">
+          <div className="ml-8 text-sm text-muted-foreground leading-relaxed bg-white/[0.05] border border-white/[0.08] rounded-md px-3 py-2.5">
             {helpText}
           </div>
         </div>
