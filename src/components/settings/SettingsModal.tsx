@@ -1,18 +1,26 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { Settings } from 'lucide-react'
+import { Settings, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { MODELS, useModelConfig } from '@/hooks/useModelConfig'
+import { cn } from '@/lib/utils'
 import type { ModelConfig } from '@/lib/types'
 
 export function SettingsModal() {
   const { config, save } = useModelConfig()
   const [draft, setDraft] = useState<ModelConfig>(config)
-  // Sync draft when localStorage hydrates (config changes after first render)
+  const [saved, setSaved] = useState(false)
+
   useEffect(() => { setDraft(config) }, [config])
+
+  const handleSave = () => {
+    save(draft)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2200)
+  }
 
   return (
     <Dialog>
@@ -36,12 +44,12 @@ export function SettingsModal() {
                 setDraft(d => ({ ...d, provider: v as ModelConfig['provider'], model: MODELS[v as keyof typeof MODELS][0] }))
               }}
             >
-              <SelectTrigger className="bg-background/60 border-border/60 h-9 text-xs">
+              <SelectTrigger className="bg-background/60 border-border/80 h-10 text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
                 {(Object.keys(MODELS) as (keyof typeof MODELS)[]).map(p => (
-                  <SelectItem key={p} value={p} className="text-xs">
+                  <SelectItem key={p} value={p} className="text-sm">
                     {p[0].toUpperCase() + p.slice(1)}
                   </SelectItem>
                 ))}
@@ -58,12 +66,12 @@ export function SettingsModal() {
                 setDraft(d => ({ ...d, model: v }))
               }}
             >
-              <SelectTrigger className="bg-background/60 border-border/60 h-9 text-xs font-mono">
+              <SelectTrigger className="bg-background/60 border-border/80 h-10 text-sm font-mono">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
                 {MODELS[draft.provider].map(m => (
-                  <SelectItem key={m} value={m} className="text-xs font-mono">{m}</SelectItem>
+                  <SelectItem key={m} value={m} className="text-sm font-mono">{m}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -74,20 +82,26 @@ export function SettingsModal() {
             <Input
               type="password"
               placeholder={`${draft.provider} API key`}
-              className="bg-background/60 border-border/60 h-9 text-xs font-mono focus:border-amber-500/50"
+              className="bg-background/60 border-border/80 h-10 text-sm font-mono focus:border-amber-500/60"
               value={draft.apiKey}
               onChange={e => setDraft(d => ({ ...d, apiKey: e.target.value }))}
             />
-            <p className="text-[10px] text-muted-foreground leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Lagres i nettleseren din. Sendes til valgt AI-leverandør per forespørsel — aldri logget eller lagret server-side.
             </p>
           </div>
 
           <Button
-            className="w-full h-9 font-display font-bold tracking-[0.12em] text-xs uppercase"
-            onClick={() => save(draft)}
+            className={cn(
+              'w-full h-10 font-display font-bold tracking-[0.12em] text-sm uppercase transition-all',
+              saved && 'bg-emerald-600 hover:bg-emerald-600 text-white'
+            )}
+            onClick={handleSave}
           >
-            Lagre innstillinger
+            {saved
+              ? <><Check className="w-4 h-4 mr-2" />Lagret!</>
+              : 'Lagre innstillinger'
+            }
           </Button>
         </div>
       </DialogContent>
