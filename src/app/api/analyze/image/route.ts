@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const checks = [await checkReverseImage(imageUrl, process.env.BING_SEARCH_KEY ?? '')]
   if (extractedQrUrl) {
     const qr = await checkSafeBrowsing([extractedQrUrl], process.env.GOOGLE_SAFE_BROWSING_KEY ?? '')
-    checks.push({ ...qr, id:'qr-url-safety', label:'QR URL Safety' })
+    checks.push({ ...qr, id:'qr-url-safety', label:'QR-kode URL-sjekk' })
   }
   const score = calculateScore(checks)
   const report: AnalysisReport = { score, riskLevel: getRiskLevel(score), checks, summary: checks[0].detail }
