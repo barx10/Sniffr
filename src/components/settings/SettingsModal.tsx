@@ -49,7 +49,7 @@ export function SettingsModal() {
             <Label>API Key</Label>
             <Input type="password" placeholder={`${draft.provider} API key`}
               value={draft.apiKey} onChange={e => setDraft(d => ({ ...d, apiKey: e.target.value }))} />
-            <p className="text-xs text-muted-foreground">Stored in your browser only. Never sent to our servers.</p>
+            <p className="text-xs text-muted-foreground">Stored in your browser. Sent to your chosen AI provider per request — never logged or stored server-side.</p>
           </div>
           <Button className="w-full" onClick={() => save(draft)}>Save</Button>
         </div>

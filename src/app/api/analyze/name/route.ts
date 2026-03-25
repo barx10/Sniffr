@@ -5,9 +5,11 @@ import { calculateScore, getRiskLevel } from '@/lib/scoring'
 import type { AnalysisReport, ModelConfig } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
-  const { name, email, context, modelConfig } = await req.json() as {
-    name: string; email?: string; context?: string; modelConfig: ModelConfig
-  }
+  let body: { name: string; email?: string; context?: string; modelConfig: ModelConfig }
+  try { body = await req.json() } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }) }
+  const { name, email, context, modelConfig } = body
+  if (!name || !modelConfig?.apiKey)
+    return NextResponse.json({ error: 'Missing required fields or API key' }, { status: 400 })
   const checks = email ? [await checkEmailRep(email, process.env.EMAILREP_KEY ?? '')] : []
   const ai = await analyzeWithAI('name', { name, context: context ?? '' }, checks, modelConfig)
   checks.push(ai)

@@ -4,7 +4,7 @@ export function calculateScore(checks: CheckResult[]): number {
   const active = checks.filter(c => c.status !== 'error')
   const total = active.reduce((s, c) => s + c.weight, 0)
   if (total === 0) return 0
-  const risk = checks.reduce((s, c) => {
+  const risk = active.reduce((s, c) => {
     if (c.status === 'fail') return s + c.weight
     if (c.status === 'warn') return s + c.weight * 0.5
     return s

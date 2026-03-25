@@ -5,7 +5,10 @@ import { calculateScore, getRiskLevel } from '@/lib/scoring'
 import type { AnalysisReport, ModelConfig } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
-  const { imageUrl, extractedQrUrl } = await req.json() as { imageUrl: string; extractedQrUrl?: string; modelConfig: ModelConfig }
+  let body: { imageUrl: string; extractedQrUrl?: string }
+  try { body = await req.json() } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }) }
+  const { imageUrl, extractedQrUrl } = body
+  if (!imageUrl) return NextResponse.json({ error: 'Missing imageUrl' }, { status: 400 })
   const checks = [await checkReverseImage(imageUrl, process.env.BING_SEARCH_KEY ?? '')]
   if (extractedQrUrl) {
     const qr = await checkSafeBrowsing([extractedQrUrl], process.env.GOOGLE_SAFE_BROWSING_KEY ?? '')

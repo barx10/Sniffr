@@ -10,11 +10,13 @@ import { calculateScore, getRiskLevel } from '@/lib/scoring'
 import type { CheckResult, ModelConfig, AnalysisReport } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
-  const { sender, subject, emailBody, headers: rawHeaders, modelConfig } = await req.json() as {
-    sender: string; subject: string; emailBody: string; headers?: string; modelConfig: ModelConfig
-  }
+  let body: { sender: string; subject: string; emailBody: string; headers?: string; modelConfig: ModelConfig }
+  try { body = await req.json() } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }) }
+  const { sender, subject, emailBody, headers: rawHeaders, modelConfig } = body
+  if (!sender || !emailBody || !modelConfig?.apiKey)
+    return NextResponse.json({ error: 'Missing required fields or API key' }, { status: 400 })
 
-  const fullText = `${sender} ${subject} ${emailBody}`
+  const fullText = `${sender} ${subject ?? ''} ${emailBody}`
   const urls = extractUrls(fullText)
   const senderDomain = sender.includes('@') ? sender.split('@')[1] : ''
 
