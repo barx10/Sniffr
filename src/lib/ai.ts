@@ -35,7 +35,7 @@ export async function analyzeWithAI(
     const detail = parsed.detail ?? text.slice(0, 200)
     return {
       id: 'ai-analysis', label: 'AI-analyse',
-      status: parsed.status ?? 'warn', weight: 30,
+      status: parsed.status ?? 'warn', weight: 50,
       detail: flags.length ? `${detail} Flagg: ${flags.join(', ')}` : detail,
       data: parsed,
     }
