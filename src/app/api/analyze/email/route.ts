@@ -34,33 +34,33 @@ export async function POST(req: NextRequest) {
 
   const lookalikes = detectLookalikeDomains(extractDomains(fullText))
   checks.push({
-    id: 'lookalike', label: 'Lookalike Domains',
+    id: 'lookalike', label: 'Falske domener',
     status: lookalikes.length > 0 ? 'fail' : 'pass', weight: 15,
-    detail: lookalikes.length > 0 ? lookalikes.map(l => `${l.domain}: ${l.reason}`).join('; ') : 'No lookalike domains',
+    detail: lookalikes.length > 0 ? lookalikes.map(l => `${l.domain}: ${l.reason}`).join('; ') : 'Ingen falske domener funnet',
     data: lookalikes,
   })
 
-  const hasCrypto = containsCryptoMention(emailBody)
+  const hasCrypto = containsCryptoMention(emailBody ?? '')
   checks.push({
-    id: 'crypto-flag', label: 'Crypto / Gift Cards',
+    id: 'crypto-flag', label: 'Krypto / Gavekort',
     status: hasCrypto ? 'fail' : 'pass', weight: 20,
-    detail: hasCrypto ? 'Crypto or gift card request found — strong scam indicator' : 'No crypto or gift card mentions',
+    detail: hasCrypto ? 'Forespørsel om krypto eller gavekort funnet — sterk svindelindikator' : 'Ingen krypto- eller gavekortreferanser',
   })
 
   const phones = extractPhoneNumbers(fullText)
-  checks.push({ id:'phone-numbers', label:'Phone Numbers', status: phones.length ? 'warn' : 'pass', weight:5,
-    detail: phones.length ? `Found: ${phones.join(', ')}` : 'None found', data: phones })
+  checks.push({ id:'phone-numbers', label:'Telefonnumre', status: phones.length ? 'warn' : 'pass', weight:5,
+    detail: phones.length ? `Funnet: ${phones.join(', ')}` : 'Ingen telefonnumre', data: phones })
 
   if (rawHeaders) {
     const h = parseEmailHeaders(rawHeaders)
     const issues = [
-      h.spf === 'fail' && 'SPF fail',
-      (h.dkim === 'fail' || h.dkim === 'none') && 'DKIM missing/fail',
-      h.dmarc === 'fail' && 'DMARC fail'
+      h.spf === 'fail' && 'SPF-feil',
+      (h.dkim === 'fail' || h.dkim === 'none') && 'DKIM mangler/feil',
+      h.dmarc === 'fail' && 'DMARC-feil'
     ].filter(Boolean) as string[]
-    checks.push({ id:'headers', label:'Email Headers',
+    checks.push({ id:'headers', label:'E-posthoder',
       status: issues.length >= 2 ? 'fail' : issues.length === 1 ? 'warn' : 'pass', weight:15,
-      detail: issues.length ? `Auth failures: ${issues.join(', ')}${h.originatingIp ? `. IP: ${h.originatingIp}` : ''}` : 'SPF/DKIM/DMARC all pass',
+      detail: issues.length ? `Autentiseringsfeil: ${issues.join(', ')}${h.originatingIp ? `. IP: ${h.originatingIp}` : ''}` : 'SPF/DKIM/DMARC godkjent',
       data: h })
   }
 
