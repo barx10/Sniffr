@@ -62,15 +62,25 @@ export function EmailMode() {
           onClick={() => setShowHeaders(v => !v)}
         >
           {showHeaders ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
-          E-posthoder — SPF / DKIM / DMARC
+          E-posthoder (valgfritt)
         </button>
         {showHeaders && (
-          <Textarea
-            className="mt-3 h-28 font-mono text-xs resize-y bg-background/60 border-border/80 focus:border-amber-500/60 transition-colors"
-            placeholder="Received: from mail.example.com..."
-            value={headers}
-            onChange={e => setHeaders(e.target.value)}
-          />
+          <div className="mt-3 space-y-3">
+            <div className="text-sm text-muted-foreground leading-relaxed bg-white/[0.03] border border-white/[0.07] rounded-md px-3 py-2.5 space-y-2">
+              <p>E-posthoder er teknisk metadata som følger med alle e-poster — usynlig i vanlig visning. De inneholder informasjon om hvem som faktisk sendte e-posten, hvilke servere den passerte, og om SPF/DKIM/DMARC-autentisering er godkjent. Spammere kan forfalske avsenderadressen, men ikke hodene.</p>
+              <p className="text-xs text-muted-foreground/80">
+                <span className="font-semibold text-foreground/60">Gmail:</span> Åpne e-posten → ⋮ (tre prikker) → «Vis original» → kopier alt<br/>
+                <span className="font-semibold text-foreground/60">Outlook:</span> Fil → Egenskaper → «Internett-hoder»<br/>
+                <span className="font-semibold text-foreground/60">Apple Mail:</span> Vis → Melding → Alle hoder (⌥⌘H)
+              </p>
+            </div>
+            <Textarea
+              className="h-28 font-mono text-xs resize-y bg-background/60 border-border/80 focus:border-amber-500/60 transition-colors"
+              placeholder="Received: from mail.example.com&#10;DKIM-Signature: v=1; a=rsa-sha256;&#10;..."
+              value={headers}
+              onChange={e => setHeaders(e.target.value)}
+            />
+          </div>
         )}
       </div>
 
