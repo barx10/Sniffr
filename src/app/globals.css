@@ -96,8 +96,7 @@
   --secondary: oklch(0.16 0.008 270);
   --secondary-foreground: oklch(0.95 0.005 75);
   --muted: oklch(0.14 0.008 270);
-  /* ↑ Higher contrast muted text — was 0.52, now 0.64 */
-  --muted-foreground: oklch(0.64 0.012 270);
+  --muted-foreground: oklch(0.74 0.01 270);
   --accent: oklch(0.16 0.008 270);
   --accent-foreground: oklch(0.95 0.005 75);
   --destructive: oklch(0.65 0.22 27);
@@ -130,7 +129,7 @@
   }
   html {
     @apply font-sans;
-    font-size: 15px;
+    font-size: 16px;
   }
 }
 
@@ -139,11 +138,11 @@
     font-family: var(--font-syne, var(--font-geist-sans), sans-serif);
   }
   .field-label {
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: oklch(0.64 0.012 270);
+    color: oklch(0.74 0.01 270);
   }
 }
 
