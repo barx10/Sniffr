@@ -9,7 +9,10 @@ export function calculateScore(checks: CheckResult[]): number {
     if (c.status === 'warn') return s + c.weight * 0.5
     return s
   }, 0)
-  return Math.min(100, Math.round((risk / total) * 100))
+  const base = Math.min(100, Math.round((risk / total) * 100))
+  const aiCheck = active.find(c => c.id === 'ai-analysis')
+  if (aiCheck?.status === 'fail') return Math.max(base, 40)
+  return base
 }
 
 export function getRiskLevel(score: number): RiskLevel {
