@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -11,6 +11,8 @@ import type { ModelConfig } from '@/lib/types'
 export function SettingsModal() {
   const { config, save } = useModelConfig()
   const [draft, setDraft] = useState<ModelConfig>(config)
+  // Sync draft when localStorage hydrates (config changes after first render)
+  useEffect(() => { setDraft(config) }, [config])
 
   return (
     <Dialog>
